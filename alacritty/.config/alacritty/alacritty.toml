@@ -4,5 +4,5 @@ padding = { x = 25, y = 25 }
 opacity = 0.9
 
 [font]
-normal = { family = "Ubuntu Mono", style = "Regular" }
-size = 12
+normal = { family = "Cousine Nerd Font", style = "Regular" }
+size = 11

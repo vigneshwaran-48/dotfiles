@@ -22,7 +22,7 @@ return {
 
       local root_marker = vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1]
 
-      -- Java version 21 is required for jdtls
+      -- Java version 17 is required for jdtls
       local config = {
         -- cmd = { '' },
         root_dir = root_marker,

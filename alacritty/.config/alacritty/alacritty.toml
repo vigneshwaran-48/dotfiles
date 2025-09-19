@@ -6,3 +6,7 @@ opacity = 0.9
 [font]
 normal = { family = "Cousine Nerd Font", style = "Regular" }
 size = 11
+
+[terminal.shell]
+program = "/usr/bin/zsh"  # or "/usr/bin/bash", etc.
+args = [ "-c", "tmux attach -t default || tmux new -s default" ]

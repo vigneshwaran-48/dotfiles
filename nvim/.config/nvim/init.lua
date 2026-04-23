@@ -27,5 +27,20 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+if vim.fn.has('wsl') == 1 then
+    vim.g.clipboard = {
+        name = 'WslClipboard',
+        copy = {
+            ['+'] = 'clip.exe',
+            ['*'] = 'clip.exe',
+        },
+        paste = {
+            ['+'] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+            ['*'] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+        },  
+        cache_enabled = 0,
+    }
+end
+
 require("vim-options")
 require("lazy").setup("plugins")

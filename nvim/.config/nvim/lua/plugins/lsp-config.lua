@@ -9,7 +9,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "ts_ls", "clangd", "gopls", "bashls", "jdtls", "pyright", "templ" }
+        ensure_installed = { "lua_ls", "ts_ls", "clangd", "gopls", "bashls", "jdtls", "pyright", "templ", "zls" }
       })
     end
   },
@@ -56,8 +56,14 @@ return {
       lspconfig.templ.setup({
         cmd = { "templ", "lsp" },
         filetypes = { "templ" },
-        root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
+        root_dir = lspconfig.util.root_pattern("go.mod", ".git") or vim.loop.cwd,
         settings = {},
+      })
+      lspconfig.zls.setup({
+        cmd = { "zls" },
+        filetypes = { "zig", "zir" },
+        root_dir = lspconfig.util.root_pattern("zls.json", "build.zig", ".git"),
+        single_file_support = true,
       })
 
       vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})

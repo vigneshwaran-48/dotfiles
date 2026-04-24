@@ -1,3 +1,4 @@
+general.import = ["~/.config/alacritty/cyberdream.toml"]
 
 [window]
 padding = { x = 25, y = 25 }
@@ -10,3 +11,4 @@ size = 11
 [terminal.shell]
 program = "/usr/bin/zsh"  # or "/usr/bin/bash", etc.
 args = [ "-c", "tmux attach -t default || tmux new -s default" ]
+

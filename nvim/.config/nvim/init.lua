@@ -42,5 +42,10 @@ if vim.fn.has('wsl') == 1 then
   }
 end
 
+vim.diagnostic.enable = true
+vim.diagnostic.config({
+  virtual_lines = true,
+})
+
 require("vim-options")
 require("lazy").setup("plugins")

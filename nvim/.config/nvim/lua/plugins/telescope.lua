@@ -45,6 +45,22 @@ return {
       vim.keymap.set('n', 'gr', builtin.lsp_references, {})
       vim.keymap.set('n', 'gd', builtin.lsp_definitions, {})
       vim.keymap.set('n', '<space>D', builtin.lsp_type_definitions, {})
+
+      -- Search Java files only
+      vim.keymap.set('n', '<C-j>', function()
+        builtin.find_files({
+          prompt_title = 'Find Java Files',
+          find_command = { 'rg', '--files', '--glob', '*.java' },
+        })
+      end, { desc = 'Telescope: find Java files' })
+
+      -- Search XML files only
+      vim.keymap.set('n', '<C-x>', function()
+        builtin.find_files({
+          prompt_title = 'Find XML Files',
+          find_command = { 'rg', '--files', '--glob', '*.xml' },
+        })
+      end, { desc = 'Telescope: find XML files' })
     end
   },
 }

@@ -3,7 +3,8 @@ return {
   dependencies = {
     "nvim-neotest/nvim-nio",
     "rcarriga/nvim-dap-ui",
-    "leoluz/nvim-dap-go"
+    "leoluz/nvim-dap-go",
+    "mfussenegger/nvim-jdtls",
   },
   config = function()
     local dap = require("dap")
@@ -36,7 +37,7 @@ return {
     vim.keymap.set('n', '<leader>dn', dap.step_over)
     vim.keymap.set('n', '<leader>di', dap.step_into)
     vim.keymap.set('n', '<leader>do', dap.step_out)
-    vim.keymap.set('n', '<leader>dq', function ()
+    vim.keymap.set('n', '<leader>dq', function()
       dap.disconnect({ terminateDebuggee = true })
     end)
   end

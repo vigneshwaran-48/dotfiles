@@ -1,0 +1,211 @@
+# i3 config — One Dark theme, wired to the adi1090x rofi setup in ~/.config/rofi
+# Original generated config backed up at ~/.config/i3/config.default.bak
+
+set $mod Mod4
+set $rofi ~/.config/rofi/scripts
+
+# ── One Dark palette (matches ~/.config/rofi/colors/onedark.rasi) ─────────────
+set $bg      #1E2127
+set $bg-alt  #282B31
+set $fg      #ABB2BF
+set $white   #FFFFFF
+set $grey    #5C6370
+set $blue    #61AFEF
+set $green   #98C379
+set $red     #E06C75
+set $yellow  #E5C07B
+
+font pango:JetBrainsMono Nerd Font 10
+
+# ── Looks ─────────────────────────────────────────────────────────────────────
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+gaps inner 8
+gaps outer 2
+smart_gaps on
+
+# class                 border   bg       text     indicator child_border
+client.focused          $blue    $blue    $bg      $green    $blue
+client.focused_inactive $bg-alt  $bg-alt  $fg      $bg-alt   $bg-alt
+client.unfocused        $bg      $bg      $grey    $bg       $bg
+client.urgent           $red     $red     $bg      $red      $red
+client.placeholder      $bg      $bg      $fg      $bg       $bg
+client.background       $bg
+
+# ── Autostart ─────────────────────────────────────────────────────────────────
+exec --no-startup-id dex --autostart --environment i3
+# Lock screen: xscreensaver (blank + unlock dialog with dots & Caps Lock warning).
+# Locks after 15 min idle and before suspend/lid-close (via its xscreensaver-systemd helper).
+exec --no-startup-id xscreensaver --no-splash
+exec --no-startup-id nm-applet
+# Dark mode: GNOME's settings daemon shares GNOME's theme/icons/cursor/dark-mode with apps
+exec --no-startup-id /usr/libexec/gsd-xsettings
+exec --no-startup-id systemctl --user restart xdg-desktop-portal
+# Laptop screen on the left, HDMI monitor on the right (output names are machine-specific: check `xrandr --listmonitors`)
+exec_always --no-startup-id xrandr --output eDP --auto --primary --output HDMI-A-0 --auto --right-of eDP
+# Fixed 96 DPI (scale 1.0, like GNOME) so apps don't auto-scale per monitor
+exec_always --no-startup-id sh -c 'echo "Xft.dpi: 96" | xrdb -merge; xrdb -merge ~/.config/i3/xscreensaver.Xresources'
+# Touchpad: natural scrolling + tap-to-click, same as GNOME (mouse wheel stays normal)
+exec_always --no-startup-id sh -c 'xinput list --name-only | grep -i touchpad | while read -r d; do xinput set-prop "$d" "libinput Natural Scrolling Enabled" 1; xinput set-prop "$d" "libinput Tapping Enabled" 1; done'
+# Wallpaper: whatever GNOME's dark-mode wallpaper is (needs feh; falls back to a solid colour)
+exec_always --no-startup-id sh -c 'wp=$(gsettings get org.gnome.desktop.background picture-uri-dark | sed "s|^.file://||; s|.$||"); command -v feh >/dev/null && [ -f "$wp" ] && feh --no-fehbg --bg-fill "$wp" || xsetroot -solid "#1E2127"'
+# Compositor for transparency/shadows (only if picom is installed)
+exec --no-startup-id sh -c 'command -v picom >/dev/null && picom -b'
+
+# ── Rofi ──────────────────────────────────────────────────────────────────────
+bindsym $mod+d       exec --no-startup-id $rofi/launcher_t6
+bindsym Mod1+space   exec --no-startup-id $rofi/launcher_t6
+bindsym $mod+Tab     exec --no-startup-id rofi -show window -theme ~/.config/rofi/launchers/type-6/style-4.rasi
+bindsym $mod+x       exec --no-startup-id $rofi/powermenu_t1
+bindsym $mod+Shift+e exec --no-startup-id $rofi/powermenu_t1
+
+# ── Notifications (dunst) ───────────────────────────────────────────────────
+exec --no-startup-id sh -c 'killall -q dunst; dunst -config ~/.config/dunst/dunstrc'
+exec_always --no-startup-id ~/.config/i3/notifications.sh watch
+bindsym $mod+n           exec --no-startup-id ~/.config/i3/notifications.sh
+bindsym $mod+Shift+n     exec --no-startup-id dunstctl close-all
+bindsym $mod+Ctrl+n      exec --no-startup-id dunstctl set-paused toggle
+bindsym $mod+grave       exec --no-startup-id dunstctl history-pop
+
+# ── Screenshots (maim) ──────────────────────────────────────────────────────
+bindsym Print             exec --no-startup-id ~/.config/rofi/applets/bin/screenshot.sh
+bindsym Shift+Print       exec --no-startup-id ~/.config/i3/screenshot.sh area
+bindsym $mod+Shift+s      exec --no-startup-id ~/.config/i3/screenshot.sh area
+bindsym Ctrl+Print        exec --no-startup-id ~/.config/i3/screenshot.sh full
+bindsym Mod1+Print        exec --no-startup-id ~/.config/i3/screenshot.sh window
+
+# ── Apps & system ─────────────────────────────────────────────────────────────
+bindsym $mod+Return  exec alacritty
+bindsym $mod+Shift+Return exec gnome-terminal
+bindsym $mod+Escape  exec --no-startup-id xscreensaver-command -lock
+bindsym $mod+Shift+q kill
+
+# Volume (PipeWire) and brightness
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume  exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && $refresh_i3status
+bindsym XF86AudioLowerVolume  exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && $refresh_i3status
+bindsym XF86AudioMute         exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute      exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && $refresh_i3status
+bindsym XF86MonBrightnessUp   exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+# ── Windows ───────────────────────────────────────────────────────────────────
+floating_modifier $mod
+tiling_drag modifier titlebar
+focus_follows_mouse no
+
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+h split h
+bindsym $mod+v split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+# Float dialogs and small utility windows
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [class="Nm-connection-editor"] floating enable
+for_window [class="Pavucontrol"] floating enable
+
+# ── Workspaces ────────────────────────────────────────────────────────────────
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Previous workspace / move workspace between monitors
+bindsym $mod+BackSpace workspace back_and_forth
+bindsym $mod+Ctrl+Left  move workspace to output left
+bindsym $mod+Ctrl+Right move workspace to output right
+
+# ── Session ───────────────────────────────────────────────────────────────────
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+# ── Resize ────────────────────────────────────────────────────────────────────
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# ── Bar ───────────────────────────────────────────────────────────────────────
+bar {
+        status_command ~/.config/i3/bar.py
+        position top
+        tray_output primary
+        tray_padding 4
+        separator_symbol "  "
+        font pango:JetBrainsMono Nerd Font 10
+        colors {
+                background $bg
+                statusline $fg
+                separator  $grey
+                #                  border   bg       text
+                focused_workspace  $blue    $blue    $bg
+                active_workspace   $bg-alt  $bg-alt  $white
+                inactive_workspace $bg      $bg      $grey
+                urgent_workspace   $red     $red     $bg
+                binding_mode       $yellow  $yellow  $bg
+        }
+}

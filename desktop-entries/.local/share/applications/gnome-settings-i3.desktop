@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Settings (i3)
+Comment=GNOME Settings, usable outside GNOME (Appearance, Wi-Fi, Bluetooth, Sound, Displays...)
+Exec=env XDG_CURRENT_DESKTOP=GNOME gnome-control-center ubuntu
+Icon=org.gnome.Settings
+Terminal=false
+Type=Application
+Categories=Settings;
+OnlyShowIn=i3;

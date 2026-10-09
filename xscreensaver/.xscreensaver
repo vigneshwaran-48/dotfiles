@@ -1,0 +1,17 @@
+# xscreensaver — lock screen only (no animations). Matches GNOME: lock after 15 min idle.
+timeout:        0:15:00
+lock:           True
+lockTimeout:    0:00:00
+passwdTimeout:  0:00:30
+mode:           blank
+selected:       -1
+splash:         False
+fade:           True
+unfade:         False
+fadeSeconds:    0:00:01
+dpmsEnabled:    True
+dpmsQuickOff:   True
+dpmsStandby:    0:20:00
+dpmsSuspend:    0:25:00
+dpmsOff:        0:30:00
+dialogTheme:    darkgray

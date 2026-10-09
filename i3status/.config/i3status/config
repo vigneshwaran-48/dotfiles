@@ -1,0 +1,67 @@
+# i3status — One Dark, Nerd Font icons
+general {
+        colors = true
+        color_good = "#98C379"
+        color_degraded = "#E5C07B"
+        color_bad = "#E06C75"
+        interval = 5
+        markup = "pango"
+        output_format = "i3bar"
+}
+
+order += "wireless wlp2s0"
+order += "ethernet enp1s0f0"
+order += "volume master"
+order += "battery 0"
+order += "tztime local"
+
+wireless wlp2s0 {
+        format_up = "󰖩 %essid"
+        format_down = "󰖪 offline"
+}
+
+ethernet enp1s0f0 {
+        format_up = "󰈀 %ip"
+        format_down = ""
+}
+
+cpu_usage {
+        format = " %usage"
+        degraded_threshold = 60
+        max_threshold = 85
+}
+
+memory {
+        format = " %used"
+        threshold_degraded = "20%"
+        threshold_critical = "10%"
+}
+
+disk "/" {
+        format = "󰋊 %avail"
+        low_threshold = 10
+}
+
+volume master {
+        format = "󰕾 %volume"
+        format_muted = "󰖁 muted"
+        device = "default"
+}
+
+battery 0 {
+        format = "%status %percentage"
+        format_down = ""
+        status_chr = "󰂄"
+        status_bat = "󰁹"
+        status_unk = "󰁹"
+        status_full = "󰁹"
+        integer_battery_capacity = true
+        low_threshold = 15
+        threshold_type = percentage
+        last_full_capacity = true
+}
+
+tztime local {
+        format = "<span color='#61AFEF'>󰃭 %a %d %b  %H:%M</span>"
+}
+

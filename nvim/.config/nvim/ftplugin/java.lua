@@ -78,8 +78,11 @@ local config = {
       },
       format = {
         enabled = true,
+        tabSize = 4,
+        insertSpaces = true,
         settings = {
-          url = "/home/vignesh-22164/Eclipse_custom.xml"
+          url = "/home/vignesh-22164/Eclipse_custom.xml",
+          profile = "Eclipse Custom"
         }
       }
     },

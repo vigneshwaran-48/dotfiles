@@ -1,1 +1,9 @@
 nvim/.config/nvim/ripgrep_14.1.1-1_amd64.deb
+
+# Local backups and caches
+*.bak
+*.bak[0-9]
+__pycache__/
+
+# rofi images are third-party (adi1090x/rofi) and large; install-i3.sh fetches them
+rofi/.config/rofi/images/

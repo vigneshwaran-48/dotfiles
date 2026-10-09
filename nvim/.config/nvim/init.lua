@@ -47,5 +47,10 @@ vim.diagnostic.config({
   virtual_lines = true,
 })
 
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.softtabstop = 4
+
 require("vim-options")
 require("lazy").setup("plugins")

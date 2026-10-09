@@ -1,0 +1,25 @@
+! One Dark colours for the xscreensaver unlock dialog (overrides the "darkgray" theme)
+*darkgray.Dialog.foreground:          #ABB2BF
+*darkgray.Dialog.background:          #1E2127
+*darkgray.Dialog.topShadowColor:      #1E2127
+*darkgray.Dialog.bottomShadowColor:   #1E2127
+*darkgray.Dialog.borderColor:         #61AFEF
+*darkgray.Dialog.borderWidth:         2
+*darkgray.Dialog.text.foreground:     #FFFFFF
+*darkgray.Dialog.text.background:     #282B31
+*darkgray.Dialog.button.foreground:   #1E2127
+*darkgray.Dialog.button.background:   #61AFEF
+*darkgray.Dialog.logo.background:     #1E2127
+*darkgray.Dialog.error.foreground:    #E06C75
+*darkgray.Dialog.thermometer.foreground: #61AFEF
+*darkgray.Dialog.thermometer.background: #282B31
+*darkgray.Dialog.internalPadding:     28
+*Dialog.headingFont:  JetBrainsMono Nerd Font bold 15
+*Dialog.bodyFont:     JetBrainsMono Nerd Font 12
+*Dialog.errorFont:    JetBrainsMono Nerd Font bold 12
+*Dialog.labelFont:    JetBrainsMono Nerd Font bold 12
+*Dialog.buttonFont:   JetBrainsMono Nerd Font bold 12
+*Dialog.dateFont:     JetBrainsMono Nerd Font 9
+*passwd.asterisks:    True
+*passwd.uname:        True
+*dateFormat:          %a %d %b  %H:%M

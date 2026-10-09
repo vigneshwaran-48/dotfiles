@@ -17,7 +17,7 @@
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(i3 i3status dunst rofi xdg-portal xscreensaver gtk desktop-entries)
+PACKAGES=(i3 i3status dunst rofi xdg-portal xscreensaver gtk desktop-entries picom)
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
 bold() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
@@ -35,6 +35,7 @@ APT_PACKAGES=(
 	rofi                     # launcher, power menu, notification center
 	maim xclip xdotool       # screenshots + clipboard
 	feh                      # wallpaper
+	picom                    # compositor: transparency, blur, rounded corners, shadows
 	libnotify-bin            # notify-send
 	x11-xserver-utils xinput # xrandr, xrdb, xsetroot; touchpad settings
 	brightnessctl wireplumber
@@ -42,15 +43,16 @@ APT_PACKAGES=(
 	gnome-settings-daemon    # gsd-xsettings: GNOME theme/dark mode for apps
 	xdg-desktop-portal-gtk   # dark mode signal for libadwaita apps
 	gnome-tweaks eog         # theme GUI, image viewer for screenshots
+	pipx                     # for autotiling (not in apt)
 )
 sudo apt-get update
 sudo apt-get install -y "${APT_PACKAGES[@]}"
 # Lock screen only — skip the hundreds of screensaver animations
 sudo apt-get install -y --no-install-recommends xscreensaver
 
-if ask "Install optional extra picom (transparency, tear-free)?"; then
-	sudo apt-get install -y picom
-fi
+# autotiling: new windows split along the longer side (PyPI only, installed per-user)
+pipx install autotiling || pipx upgrade autotiling
+
 
 # ── 2. rofi images (third-party, from adi1090x/rofi) ─────────────────────────
 bold "rofi theme images"

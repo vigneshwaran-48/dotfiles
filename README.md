@@ -10,7 +10,7 @@ center, xscreensaver lock screen, maim screenshots and GNOME dark mode for apps.
 ```
 
 Installs the packages, links `i3 i3status dunst rofi xdg-portal xscreensaver gtk
-desktop-entries` with GNU Stow (backing up anything in the way), and checks for
+desktop-entries picom` with GNU Stow (backing up anything in the way), and checks for
 machine-specific settings (network interfaces, fonts, themes).
 
 ### Packages
@@ -33,7 +33,8 @@ Installed by `install-i3.sh` (apt, Ubuntu 24.04):
 | `xdg-desktop-portal-gtk` | Dark-mode signal for newer (libadwaita) apps |
 | `gnome-tweaks`, `eog` | Theme settings GUI; image viewer for screenshots |
 | `stow`, `git`, `python3`, `jq` | Linking dotfiles, bar wrapper (`bar.py`), notification history parsing |
-| `picom` *(optional, asked)* | Compositor: transparency, tear-free, tinted screenshot selection |
+| `pipx` → `autotiling` | New windows split along the longer side (installed per-user from PyPI) |
+| `picom` | Compositor: transparency, blur, rounded corners, shadows, fades, tear-free |
 
 Not installed by the script — set these up yourself:
 

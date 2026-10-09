@@ -23,7 +23,7 @@ default_floating_border pixel 2
 hide_edge_borders smart
 gaps inner 8
 gaps outer 2
-smart_gaps on
+smart_gaps off
 
 # class                 border   bg       text     indicator child_border
 client.focused          $blue    $blue    $bg      $green    $blue
@@ -52,7 +52,10 @@ exec_always --no-startup-id sh -c 'xinput list --name-only | grep -i touchpad | 
 # Wallpaper: ~/Pictures/Wallpapers/wallpaper1.jpg on every screen (needs feh)
 exec_always --no-startup-id ~/.config/i3/wallpaper.sh
 # Compositor for transparency/shadows (only if picom is installed)
-exec --no-startup-id sh -c 'command -v picom >/dev/null && picom -b'
+exec_always --no-startup-id sh -c 'command -v picom >/dev/null && ! pgrep -x picom >/dev/null && picom -b'
+
+# Autotiling: new windows split along the longer side (wide → beside, tall → below)
+exec_always --no-startup-id sh -c '! pgrep -x autotiling >/dev/null && exec ~/.local/bin/autotiling'
 
 # ── Rofi ──────────────────────────────────────────────────────────────────────
 bindsym $mod+d       exec --no-startup-id $rofi/launcher_t6

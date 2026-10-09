@@ -26,6 +26,7 @@ apply() {
 		| awk -v l="$laptop" '$1==l{print; next} {rest=rest $0 "\n"} END{printf "%s", rest}')
 
 	xrandr "${args[@]}"
+	"$(dirname "$0")/wallpaper.sh"   # redraw for the new screen layout
 }
 
 if [[ "$1" == "watch" ]]; then

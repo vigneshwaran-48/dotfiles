@@ -34,6 +34,7 @@ APT_PACKAGES=(
 	stow git python3 jq
 	rofi                     # launcher, power menu, notification center
 	maim xclip xdotool       # screenshots + clipboard
+	feh                      # wallpaper
 	libnotify-bin            # notify-send
 	x11-xserver-utils xinput # xrandr, xrdb, xsetroot; touchpad settings
 	brightnessctl wireplumber
@@ -47,8 +48,8 @@ sudo apt-get install -y "${APT_PACKAGES[@]}"
 # Lock screen only — skip the hundreds of screensaver animations
 sudo apt-get install -y --no-install-recommends xscreensaver
 
-if ask "Install optional extras feh (wallpaper) and picom (transparency, tear-free)?"; then
-	sudo apt-get install -y feh picom
+if ask "Install optional extra picom (transparency, tear-free)?"; then
+	sudo apt-get install -y picom
 fi
 
 # ── 2. rofi images (third-party, from adi1090x/rofi) ─────────────────────────

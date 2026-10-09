@@ -49,8 +49,8 @@ exec_always --no-startup-id ~/.config/i3/monitors.sh watch
 exec_always --no-startup-id sh -c 'echo "Xft.dpi: 96" | xrdb -merge; xrdb -merge ~/.config/i3/xscreensaver.Xresources'
 # Touchpad: natural scrolling + tap-to-click, same as GNOME (mouse wheel stays normal)
 exec_always --no-startup-id sh -c 'xinput list --name-only | grep -i touchpad | while read -r d; do xinput set-prop "$d" "libinput Natural Scrolling Enabled" 1; xinput set-prop "$d" "libinput Tapping Enabled" 1; done'
-# Wallpaper: whatever GNOME's dark-mode wallpaper is (needs feh; falls back to a solid colour)
-exec_always --no-startup-id sh -c 'wp=$(gsettings get org.gnome.desktop.background picture-uri-dark | sed "s|^.file://||; s|.$||"); command -v feh >/dev/null && [ -f "$wp" ] && feh --no-fehbg --bg-fill "$wp" || xsetroot -solid "#1E2127"'
+# Wallpaper: ~/Pictures/Wallpapers/wallpaper1.jpg on every screen (needs feh)
+exec_always --no-startup-id ~/.config/i3/wallpaper.sh
 # Compositor for transparency/shadows (only if picom is installed)
 exec --no-startup-id sh -c 'command -v picom >/dev/null && picom -b'
 

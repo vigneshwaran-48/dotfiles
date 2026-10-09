@@ -113,12 +113,6 @@ if [[ -n "$wifi" && "$wifi" != "$cfg_wifi" ]] || [[ -n "$eth" && "$eth" != "$cfg
 	fi
 fi
 
-if command -v xrandr >/dev/null && [[ -n "${DISPLAY:-}" ]]; then
-	outputs="$(xrandr --query | awk '/ connected/{print $1}' | tr '\n' ' ')"
-	grep -q 'xrandr --output eDP .*HDMI-A-0' "$DOTFILES/i3/.config/i3/config" \
-		&& [[ "$outputs" != *eDP* || "$outputs" != *HDMI-A-0* ]] \
-		&& warn "Monitor names here are: $outputs— adjust the xrandr line in i3/.config/i3/config if needed"
-fi
 
 # ── 5. Lock screen password check ────────────────────────────────────────────
 bold "Lock screen"

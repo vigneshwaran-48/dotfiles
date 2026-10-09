@@ -11,7 +11,7 @@ center, xscreensaver lock screen, maim screenshots and GNOME dark mode for apps.
 
 Installs the packages, links `i3 i3status dunst rofi xdg-portal xscreensaver gtk
 desktop-entries` with GNU Stow (backing up anything in the way), and checks for
-machine-specific settings (network interfaces, monitor names, fonts, themes).
+machine-specific settings (network interfaces, fonts, themes).
 
 | Key | Action |
 |---|---|

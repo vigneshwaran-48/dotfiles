@@ -42,8 +42,9 @@ exec --no-startup-id nm-applet
 # Dark mode: GNOME's settings daemon shares GNOME's theme/icons/cursor/dark-mode with apps
 exec --no-startup-id /usr/libexec/gsd-xsettings
 exec --no-startup-id systemctl --user restart xdg-desktop-portal
-# Laptop screen on the left, HDMI monitor on the right (output names are machine-specific: check `xrandr --listmonitors`)
-exec_always --no-startup-id xrandr --output eDP --auto --primary --output HDMI-A-0 --auto --right-of eDP
+# Monitors: laptop screen left, external monitors to its right. Unplugged monitors are
+# switched off so i3 moves their workspaces onto the laptop screen.
+exec_always --no-startup-id ~/.config/i3/monitors.sh watch
 # Fixed 96 DPI (scale 1.0, like GNOME) so apps don't auto-scale per monitor
 exec_always --no-startup-id sh -c 'echo "Xft.dpi: 96" | xrdb -merge; xrdb -merge ~/.config/i3/xscreensaver.Xresources'
 # Touchpad: natural scrolling + tap-to-click, same as GNOME (mouse wheel stays normal)
@@ -129,6 +130,11 @@ for_window [window_role="dialog"] floating enable
 for_window [window_type="dialog"] floating enable
 for_window [class="Nm-connection-editor"] floating enable
 for_window [class="Pavucontrol"] floating enable
+# Files (Nautilus): floating, comfortable size, centred
+for_window [class="(?i)nautilus"] floating enable, resize set 1100 700, move position center
+for_window [class="(?i)^obsidian$"] floating enable, resize set 1280 800, move position center
+for_window [class="(?i)^(totp-client|dev\.vignesh\.TotpClient)$"] floating enable, move position center
+for_window [class="(?i)^(gnome-control-center|org\.gnome\.Settings)$"] floating enable, resize set 1000 700, move position center
 
 # ── Workspaces ────────────────────────────────────────────────────────────────
 set $ws1 "1"

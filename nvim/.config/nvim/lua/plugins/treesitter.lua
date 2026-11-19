@@ -1,5 +1,8 @@
 return {
-  "nvim-treesitter/nvim-treesitter", 
+  "nvim-treesitter/nvim-treesitter",
+  -- The default branch is now "main", a rewrite without nvim-treesitter.configs and
+  -- without the API telescope 0.1.x uses for previews. Stay on master.
+  branch = "master",
   build = ":TSUpdate",
   config = function()
     local config = require("nvim-treesitter.configs")

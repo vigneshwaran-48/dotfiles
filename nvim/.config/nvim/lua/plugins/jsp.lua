@@ -1,6 +1,8 @@
 return {
   dir = vim.fn.expand("~/nvim-jsp"),
   name = "nvim-jsp",
+  -- Local plugin that only exists on the Linux machine.
+  cond = vim.uv.fs_stat(vim.fn.expand("~/nvim-jsp")) ~= nil,
   ft = { "jsp" },
   dependencies = { "nvim-treesitter/nvim-treesitter" },
 

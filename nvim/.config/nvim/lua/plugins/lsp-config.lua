@@ -1,3 +1,6 @@
+-- LSP setup with Neovim's built-in vim.lsp.config / vim.lsp.enable (Neovim 0.11+).
+-- nvim-lspconfig now only supplies the default server configs (its lsp/*.lua files);
+-- the old require("lspconfig").<server>.setup() framework is deprecated.
 return {
   {
     "williamboman/mason.nvim",
@@ -7,31 +10,40 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
     config = function()
+      local servers = { "lua_ls", "ts_ls", "clangd", "bashls", "pyright", "zls", "rust_analyzer" }
+      -- Mason builds gopls and templ with `go install`, so only ask for them when Go exists.
+      if vim.fn.executable("go") == 1 then
+        vim.list_extend(servers, { "gopls", "templ" })
+      end
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "ts_ls", "clangd", "gopls", "bashls", "pyright", "templ", "zls",
-          "rust_analyzer" },
-        handlers = {
-          function(server_name)
-            if server_name == "jdtls" then return end -- handled by nvim-jdtls
-            require("lspconfig")[server_name].setup({})
-          end,
-        },
+        ensure_installed = servers,
+        -- Every installed server is enabled automatically, except these:
+        --   jdtls         started by nvim-jdtls (ftplugin/java.lua)
+        --   clangd        enabled below with ue5.nvim's command
+        --   rust_analyzer run by rustaceanvim (see rustacea.lua)
+        automatic_enable = { exclude = { "jdtls", "clangd", "rust_analyzer" } },
       })
     end
   },
   {
     "neovim/nvim-lspconfig",
+    dependencies = { "williamboman/mason.nvim" },
     config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({})
-      lspconfig.ts_ls.setup({})
+      if vim.fn.has("nvim-0.11") == 0 then
+        vim.notify("lsp-config.lua needs Neovim 0.11+ (vim.lsp.config)", vim.log.levels.ERROR)
+        return
+      end
 
-      local root_marker = vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1]
+      -- ue5.nvim's flags: LLVM's clangd, background index, no auto-inserted includes (they
+      -- break UE's .generated.h ordering). Fine for non-Unreal C++ too.
+      local ok_ue, ue = pcall(require, "ue")
+      if ok_ue then
+        vim.lsp.config("clangd", { cmd = ue.clangd_cmd() })
+      end
 
-      -- Java version 17 is required for jdtls
-      lspconfig.clangd.setup({})
-      lspconfig.gopls.setup({
+      vim.lsp.config("gopls", {
         settings = {
           gopls = {
             analyses = {
@@ -42,55 +54,19 @@ return {
           }
         }
       })
-      lspconfig.bashls.setup({})
-      lspconfig.pyright.setup({})
-      lspconfig.templ.setup({
-        cmd = { "templ", "lsp" },
-        filetypes = { "templ" },
-        root_dir = lspconfig.util.root_pattern("go.mod", ".git") or vim.loop.cwd,
-        settings = {},
-      })
-      lspconfig.zls.setup({
-        cmd = { "zls" },
-        filetypes = { "zig", "zir" },
-        root_dir = lspconfig.util.root_pattern("zls.json", "build.zig", ".git", "main.zig"),
-        single_file_support = true,
+      vim.lsp.config("zls", {
+        root_markers = { "zls.json", "build.zig", ".git", "main.zig" },
       })
 
-      lspconfig.rust_analyzer.setup({
-        cmd = { "rust-analyzer" },
-        filetypes = { "rust" },
-        root_dir = lspconfig.util.root_pattern("Cargo.toml", "rust-project.json", ".git"),
-        settings = {
-          ["rust-analyzer"] = {
-            cargo = {
-              allFeatures = true,
-              loadOutDirsFromCheck = true,
-              runBuildScripts = true,
-            },
-            checkOnSave = {
-              allFeatures = true,
-              command = "clippy",
-              extraArgs = { "--no-deps" },
-            },
-            procMacro = {
-              enable = true,
-            },
-            inlayHints = {
-              bindingModeHints = { enable = false },
-              chainingHints = { enable = true },
-              closingBraceHints = { enable = true, minLines = 25 },
-              closureReturnTypeHints = { enable = "never" },
-              lifetimeElisionHints = { enable = "never", useParameterNames = false },
-              maxLength = 25,
-              parameterHints = { enable = true },
-              reborrowHints = { enable = "never" },
-              renderColons = true,
-              typeHints = { enable = true, hideClosureInitialization = false, hideNamedConstructor = false },
-            },
-          },
-        },
-      })
+      vim.lsp.enable("clangd")
+      -- Servers installed outside Mason (e.g. gopls or zls from your distro) are not
+      -- enabled by mason-lspconfig, so enable the ones whose command is on PATH.
+      for _, name in ipairs({ "lua_ls", "ts_ls", "bashls", "pyright", "gopls", "templ", "zls" }) do
+        local cfg = vim.lsp.config[name]
+        if cfg and type(cfg.cmd) == "table" and vim.fn.executable(cfg.cmd[1]) == 1 then
+          vim.lsp.enable(name)
+        end
+      end
 
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
       vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, {})

@@ -27,6 +27,15 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+if vim.fn.has('win32') == 1 then
+  -- The LLVM installer doesn't add itself to PATH. Treesitter needs clang to build
+  -- parsers, and clangd lives there too.
+  local llvm = "C:/Program Files/LLVM/bin"
+  if vim.uv.fs_stat(llvm) and vim.fn.executable("clang") == 0 then
+    vim.env.PATH = llvm .. ";" .. vim.env.PATH
+  end
+end
+
 if vim.fn.has('wsl') == 1 then
   vim.g.clipboard = {
     name = 'WslClipboard',

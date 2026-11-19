@@ -3,7 +3,8 @@ local jdtls = require('jdtls')
 local mason_path = vim.fn.stdpath('data') .. '/mason/packages/jdtls'
 local launcher_jar = vim.fn.glob(mason_path .. '/plugins/org.eclipse.equinox.launcher_*.jar')
 
-local os_config = mason_path .. '/config_linux' -- config_mac / config_win
+local is_win = vim.fn.has('win32') == 1
+local os_config = mason_path .. (is_win and '/config_win' or vim.fn.has('mac') == 1 and '/config_mac' or '/config_linux')
 
 -- Root directory
 local root_dir = require('jdtls.setup').find_root({
@@ -48,6 +49,15 @@ if java_test_bundles then
   vim.list_extend(bundles, java_test_bundles)
 end
 
+-- Machine-specific paths: only pass the ones that exist here.
+local runtimes = {}
+local java22 = is_win and (vim.env.JAVA_HOME or 'C:/Program Files/Zulu/zulu-22') or '/usr/lib/jvm/zulu-22-amd64/'
+if vim.uv.fs_stat(java22) then
+  table.insert(runtimes, { name = "JavaSE-22", path = java22 })
+end
+local formatter_xml = is_win and vim.fn.expand('~/Eclipse_custom.xml') or '/home/vignesh-22164/Eclipse_custom.xml'
+local format_settings = vim.uv.fs_stat(formatter_xml) and { url = formatter_xml, profile = "Eclipse Custom" } or nil
+
 local config = {
   cmd = {
     'java',
@@ -72,18 +82,13 @@ local config = {
   settings = {
     java = {
       configuration = {
-        runtimes = {
-          { name = "JavaSE-22", path = "/usr/lib/jvm/zulu-22-amd64/" },
-        },
+        runtimes = runtimes,
       },
       format = {
         enabled = true,
         tabSize = 4,
         insertSpaces = true,
-        settings = {
-          url = "/home/vignesh-22164/Eclipse_custom.xml",
-          profile = "Eclipse Custom"
-        }
+        settings = format_settings,
       }
     },
   },
@@ -156,6 +161,10 @@ local config = {
 
 vim.keymap.set('n', '<leader>e', function()
   local file = vim.fn.expand('%:p')
+  if is_win then
+    vim.fn.jobstart({ 'explorer.exe', '/select,' .. file:gsub('/', '\\') }, { detach = true })
+    return
+  end
   vim.fn.jobstart({
     'dbus-send',
     '--session',
